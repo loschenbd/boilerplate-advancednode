@@ -1,7 +1,6 @@
 "use strict";
 require('dotenv').config()
 const express = require("express");
-let session = require('express-session');
 const myDB = require('./connection');
 const fccTesting = require("./freeCodeCamp/fcctesting.js");
 const pug = require('pug');
@@ -15,6 +14,16 @@ app.use(express.urlencoded({ extended: true }));
 
 app.set('view engine', 'pug');
 app.set('views', './views/pug');
+
+let session = require('express-session');
+let passport = require('passport');
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: true,
+  cookie: {secure: false}
+}), passport.initialize(), passport.session());
 
 app.route("/").get((req, res) => {
   //Change the response to render the Pug template
